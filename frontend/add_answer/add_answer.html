@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Форум" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/add_answer.css" />
+  <link rel="shortcut icon" href="icon/favicon.ico" />
+  <title>Пост</title>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header__title">
+      <a class="logo" href="/main.html">
+        <img src="img/logo 1.svg" class="logo-img" alt="Logo" />
+        <div class="f">.форум</div>
+      </a>
+      <button class="form">Вход</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="catalog-header">
+      <div class="catalog-title"></div>
+      <button class="create-btn">+ Создать пост</button>
+    </div>
+
+    <hr class="line" />
+
+    <div class="posts-container">
+      <div class="post">
+        <div class="post-header">
+          <div class="author-info">
+            <a href="#" class="author-name" id="thread-author-name"></a>
+            <div class="group" id="thread-author-group"></div>
+          </div>
+          <div class="post-date" id="thread-date"></div>
+        </div>
+
+        <div class="textarea-wrapper">
+          <div class="text-wrapper">
+            <div class="post-text">
+              <div class="post-text-content" id="thread-text" contenteditable="false"></div>
+            </div>
+          </div>
+          <div class="answer-panel">
+            <button class="delete-btn">
+              <img src="img/delete.svg" alt="Удалить" class="delete-icon" />
+            </button>
+          </div>
+      </div>
+    </div>
+
+    <div class="add-answer">
+      <div class="textarea-wrapper">
+        <div class="text-wrapper">
+          <div class="post-text">
+            <div class="post-text-content-add-answer" id="add-answer-text" contenteditable="true" data-placeholder="Наберите текст..."></div>
+          </div>
+        </div>
+      </div>
+
+    <div>
+      <label for="anon-checkbox" class="anon-checkbox">
+        <input type="checkbox" id="anon-checkbox">
+        <span class="custom-checkbox"></span>
+        <span class="anonymity-text">Анонимность</span>
+      </label>
+      <button class="reply-btn">Отправить</button>
+    </div>
+    
+  </div>
+
+    <div id="answers-container"></div>
+
+  </div>
+  </div>
+
+  </main>
+
+  <footer class="footer"></footer>
+
+  <script src="js/add_answer.js"></script>
+
+</body>
+</html>

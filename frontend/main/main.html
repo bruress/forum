@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ВятГУ форум</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" type="image/png" href="icon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="icon/favicon.svg" />
+    <link rel="shortcut icon" href="icon/favicon.ico" />
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header__title">
+          <a class="logo" href="/main.html">
+            <img src="img/logo 1.svg" class="logo-img" alt="Logo">
+            <div class="f">.форум</div>
+          </a>
+          <button class="form">Вход</button>
+        </div>
+      </header>
+
+    <section class="main-section">
+        <div class="question-container">
+            <div class="question-header">
+                <h1>Задай свой вопрос <span>прямо сейчас!</span></h1>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <div class="form-top">
+                <input type="text" id="topic-input" placeholder="Тема..." class="topic-input" />
+
+                <select id="catalog-select" class="catalog-select">
+                    <option value="" disabled selected hidden>Выберите категорию</option>
+                </select>
+            </div>
+
+            <div id="text-input" contenteditable="true" placeholder="Наберите текст..."></div>
+
+            <div class="toolbar-and-submit">
+                <div class="toolbar">
+                    <button class='sem' id="bold-btn">
+                        <img src="img/B.svg" alt="bold">
+                    </button>
+                    <button class='sem' id="italic-btn">
+                        <img src="img/k.svg" alt="italic">
+                    </button>
+                    <button class='sem' id="underline-btn">
+                        <img src="img/U.svg" alt="underline">
+                    </button>
+                    <button class='sem' id="strike-btn">
+                        <img src="img/S.svg" alt="strike">
+                    </button>
+                    <button class='sem' id="superscript-btn">
+                        <img src="img/Aa.svg" alt="superscript">
+                    </button>
+                    <button class='sem' id="subscript-btn">
+                        <img src="img/A_a.svg" alt="subscript">
+                    </button>
+                    <div class="answer-form">
+                        <label for="anon-checkbox" class="anon-checkbox">
+                            <input type="checkbox" id="anon-checkbox">
+                            <span class="custom-checkbox"></span>
+                            <span class="anonymity-text">Анонимность</span>
+                        </label>
+                    
+                    </div>
+                    <button class="submit-btn" id="submitButton">Отправить</button>
+        </div>
+    </section>
+
+    <section class="subsection">
+        <h2>Или дай ответ другим!</h2>
+        <div class="columns">
+            <!-- Образование -->
+            <div class="column">
+                <div class="category">Образование</div>
+                <h3>Первый курс</h3>
+                <ul>
+                    <li class="category-item" data-category="1">Русский язык и культура речи</li>
+                    <li class="category-item" data-category="2">Физическая культура</li>
+                    <li class="category-item" data-category="3">Концепция современного естествознания</li>
+                    <li class="category-item" data-category="4">Основы российской государственности</li>
+                    <li class="category-item" data-category="5">Основы инженерной культуры</li>
+                    <li class="category-item" data-category="6">Иностранный язык</li>
+                    <li class="category-item" data-category="7">Информатика</li>
+                    <li class="category-item" data-category="8">Программирование</li>
+                    <li class="category-item" data-category="9">Математика</li>
+                    <li class="category-item" data-category="10">Введение в профессию</li>
+                    <li class="category-item" data-category="11">Дискретная математика</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h4>Второй курс</h4>
+                <ul>
+                    <li class="category-item" data-category="9">Математика</li>
+                    <li class="category-item" data-category="2">Физическая культура</li>
+                    <li class="category-item" data-category="12">Системная инженерия</li>
+                    <li class="category-item" data-category="13">История России</li>
+                    <li class="category-item" data-category="14">Физические основы функционирования ЭВМ</li>
+                    <li class="category-item" data-category="15">Теория автоматов</li>
+                    <li class="category-item" data-category="16">Технологии программирования</li>
+                    <li class="category-item" data-category="17">Управление данными</li>
+                    <li class="category-item" data-category="18">Вычислительная математика и методы оптимизации</li>
+                    <li class="category-item" data-category="19">Основы российского законодательства</li>
+                    <li class="category-item" data-category="20">Объектно-ориентированное программирование</li>
+                    <li class="category-item" data-category="21">Алгоритмы и структуры данных</li>
+                    <li class="category-item" data-category="22">Инженерия требований</li>
+                    <li class="category-item" data-category="23">Электроника интегральных схем</li>
+                    <li class="category-item" data-category="24">Моделирование бизнес-процессов</li>
+                    <li class="category-item" data-category="25">Разработка мультимедийных приложений</li>
+                    <li class="category-item" data-category="26">Цифровая схемотехника</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h4>Третий курс</h4>
+                <ul>
+                    <li class="category-item" data-category="27">Введение в архитектуру ЭВМ</li>
+                    <li class="category-item" data-category="28">Философия</li>
+                    <li class="category-item" data-category="29">Архитектура операционных систем и сервисное программное обеспечение</li>
+                    <li class="category-item" data-category="30">Теория компиляторов и формальные грамматики</li>
+                    <li class="category-item" data-category="31">Безопасность жизнедеятельности</li>
+                    <li class="category-item" data-category="32">Моделирование</li>
+                    <li class="category-item" data-category="33">Архитектура вычислительных систем</li>
+                    <li class="category-item" data-category="34">Инструментальные средства проектирования компонентов вычислительной техники</li>
+                    <li class="category-item" data-category="35">Предметно-ориентированные автоматизированные информационные системы</li>
+                    <li class="category-item" data-category="36">Сценарное и функциональное программирование</li>
+                    <li class="category-item" data-category="37">Объектно-ориентированный анализ и проектирование</li>
+                    <li class="category-item" data-category="38">Проектирование систем на ПЛИС</li>
+                    <li class="category-item" data-category="39">Разработка Web-приложений</li>
+                    <li class="category-item" data-category="40">UI/UX-дизайн приложений</li>
+                    <li class="category-item" data-category="41">Организация ЭВМ</li>
+                    <li class="category-item" data-category="42">Системное программирование</li>
+                    <li class="category-item" data-category="43">Микропроцессорные системы</li>
+                    <li class="category-item" data-category="44">Проектирование информационных систем</li>
+                    <li class="category-item" data-category="45">Разработка приложений для мобильных платформ</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h4>Четвёртый курс</h4>
+                <ul>
+                    <li class="category-item" data-category="46">Экономика организаций</li>
+                    <li class="category-item" data-category="47">Сети ЭВМ и средства телекоммуникации</li>
+                    <li class="category-item" data-category="48">Управление IT проектами</li>
+                    <li class="category-item" data-category="49">Интеллектуальные системы</li>
+                    <li class="category-item" data-category="50">Проектный практикум</li>
+                    <li class="category-item" data-category="51">Параллельное программирование</li>
+                    <li class="category-item" data-category="52">Кибербезопасность и защита информации</li>
+                    <li class="category-item" data-category="53">Методологии разработки программного обеспечения</li>
+                    <li class="category-item" data-category="54">Методы и средства верификации</li>
+                    <li class="category-item" data-category="55">Организация параллельных вычислительных систем</li>
+                    <li class="category-item" data-category="56">Разработка корпоративных информационных систем</li>
+                    <li class="category-item" data-category="57">Разработка систем управления</li>
+                    <li class="category-item" data-category="58">Сопровождение и эксплуатация программно-аппаратных средств</li>
+                    <li class="category-item" data-category="59">Анализ данных</li>
+                    <li class="category-item" data-category="60">Промышленная разработка программного обеспечения</li>
+                    <li class="category-item" data-category="61">Технология Интернета вещей</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h4>Общее</h4>
+                <ul>
+                    <li class="category-item" data-category="62">Практика</li>
+                    <li class="category-item" data-category="63">Диплом</li>
+                    <li class="category-item" data-category="64">Флудилка</li>
+                    <li class="category-item" data-category="65">Мемы</li>
+                </ul>
+            </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+    </footer>
+    <script src="js/main.js"></script>
+    </body>
+    
+    </html>
+    
+</html>

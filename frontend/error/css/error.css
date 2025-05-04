@@ -1,0 +1,42 @@
+html {
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    height: 100%; /* Растягиваем на всю высоту экрана */
+    margin: 0;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Чтобы контент растягивался на весь экран */
+  }
+  
+  .main {
+    flex-grow: 1; /* Это важно, чтобы контент растягивался на всю высоту экрана */
+    padding: 20px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  *,*::before,*::after {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+    font-family: "Jura", sans-serif;
+  }
+  
+  :root {
+    --white: #fff;
+    --black: #000;
+    --blue: #42B2FC;
+    --cerii: #dcdcdc;
+  }
+
+  .text {
+    color: #42B2FC;
+    font-size: 250px;
+    font-family: "Jura", sans-serif;
+    text-align: center;
+}
