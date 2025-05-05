@@ -223,23 +223,22 @@ body {
 }
 
 #text-input {
+  resize: none;
   border: 1px solid #000;
-  display: flex;
-  width: 100%;
-  max-width: 1307px;  
+  display: block;
+  width: 100%; 
+  max-width: 1307px; 
   height: 439px;
   border-radius: 15px;
-  box-sizing: border-box; 
+  box-sizing: border-box;  
   background-color: white; 
   outline: none;
-  border-radius: 15px;
-  font-size: 32px;
-  resize: none;
+  font-size: 38px;
   font-weight: medium;
-  font-family: "Jura", sans-serif;
   padding: 20px 20px 20px 20px;  
-  box-sizing: border-box; 
-  background-color: white;
+  overflow-y: auto; 
+  white-space: pre-wrap; 
+  word-wrap: break-word;
 }
 
 .toolbar button.active {
@@ -248,17 +247,19 @@ body {
 }
 
 #text-input[contenteditable="true"]:empty:before {
-    content: attr(placeholder);
-    color: #999;
-    display: block;
+  content: attr(placeholder);
+  color: #9BADBF;
+  display: block;
 }
 
 #text-input[contenteditable="true"] {
-    min-height: 100px;
-    border: 1px solid #000;
-    padding: 20px;
-    margin: 10px 0;
-    outline: none;
+  min-height: 100px;
+  border: 1px solid #000;
+  padding: 20px;
+  margin: 10px 0;
+  outline: none;
+  outline: none;
+  overflow-y: auto;
 }
 
 .toolbar-and-submit {

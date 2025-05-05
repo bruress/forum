@@ -136,7 +136,20 @@ exports.getAnswerReactionsCount = async (req, res) => {
   }
 };
 
+exports.getAllAnswerReactions = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;  // Пагинация по умолчанию
 
+  try {
+    const [rows] = await db.query(
+      'SELECT * FROM answer_reaction LIMIT ?, ?',
+      [(page - 1) * limit, limit]
+    );
+    res.json({ reactions: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка при получении реакций на ответы' });
+  }
+};
 
 exports.getAllThreadReactions = async (req, res) => {
   const { page = 1, limit = 10 } = req.query;  // Пагинация по умолчанию
@@ -153,20 +166,6 @@ exports.getAllThreadReactions = async (req, res) => {
   }
 };
 
-exports.getAllAnswerReactions = async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;  // Пагинация по умолчанию
-
-  try {
-    const [rows] = await db.query(
-      'SELECT * FROM answer_reaction LIMIT ?, ?',
-      [(page - 1) * limit, limit]
-    );
-    res.json({ reactions: rows });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Ошибка при получении реакций на ответы' });
-  }
-};
 
 exports.getThreadReactionsByThreadId = async (req, res) => {
   const { thread_id } = req.params;
@@ -224,7 +223,7 @@ exports.getThreadReactionsCount = async (req, res) => {
   }
 };
 
-exports.updateReaction = async (req, res) => {
+exports.updateReaction = async (req, res) => { // апдейтт реакций на ответ и тред
   const { student_id, thread_id, answer_id, type_reaction } = req.body;
 
   if (!student_id || (!thread_id && !answer_id) || !['like', 'dislike'].includes(type_reaction)) {
@@ -234,6 +233,9 @@ exports.updateReaction = async (req, res) => {
   try {
     let query;
     let params;
+    let countQuery;
+    let countParams;
+
 
     if (thread_id) {
       query = `
@@ -242,57 +244,44 @@ exports.updateReaction = async (req, res) => {
         ON DUPLICATE KEY UPDATE type_reaction = VALUES(type_reaction)
       `;
       params = [student_id, thread_id, type_reaction];
-    } else if (answer_id) {
+      countQuery = `
+        SELECT 
+          COALESCE(SUM(CASE WHEN tr.type_reaction = 'like' THEN 1 ELSE 0 END), 0) AS likes,
+          COALESCE(SUM(CASE WHEN tr.type_reaction = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes
+        FROM thread_reaction tr
+        WHERE tr.thread_id = ?
+      `;
+      countParams = [thread_id];
+    }
+
+    else if (answer_id) {
       query = `
         INSERT INTO answer_reaction (student_id, answer_id, type_reaction)
         VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE type_reaction = VALUES(type_reaction)
       `;
       params = [student_id, answer_id, type_reaction];
+      countQuery = `
+        SELECT 
+          COALESCE(SUM(CASE WHEN ar.type_reaction = 'like' THEN 1 ELSE 0 END), 0) AS likes,
+          COALESCE(SUM(CASE WHEN ar.type_reaction = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes
+        FROM answer_reaction ar
+        WHERE ar.answer_id = ?
+      `;
+      countParams = [answer_id];
     }
 
-    const [result] = await db.query(query, params);
-    res.status(200).json({ message: 'Реакция обновлена', reaction_id: result.insertId });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Ошибка при обновлении реакции' });
-  }
-};
-exports.updateAnswerReaction = async (req, res) => {
-  const { student_id, answer_id, type_reaction } = req.body;
-
-  if (!student_id || !answer_id || !['like', 'dislike'].includes(type_reaction)) {
-    return res.status(400).json({ error: 'Неверные входные данные' });
-  }
-
-  try {
-    // Вставка или обновление реакции
-    const query = `
-      INSERT INTO answer_reaction (student_id, answer_id, type_reaction)
-      VALUES (?, ?, ?)
-      ON DUPLICATE KEY UPDATE type_reaction = VALUES(type_reaction)
-    `;
-    const params = [student_id, answer_id, type_reaction];
     await db.query(query, params);
 
-    // Получаем обновленные значения лайков и дизлайков для этого ответа
-    const countQuery = `
-      SELECT 
-        COALESCE(SUM(CASE WHEN ar.type_reaction = 'like' THEN 1 ELSE 0 END), 0) AS likes,
-        COALESCE(SUM(CASE WHEN ar.type_reaction = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes
-      FROM answer_reaction ar
-      WHERE ar.answer_id = ?
-    `;
-    const [counts] = await db.query(countQuery, [answer_id]);
+    const [counts] = await db.query(countQuery, countParams);
 
-    // Отправляем обновленные значения лайков и дизлайков
     res.status(200).json({
-      message: 'Реакция на ответ обновлена',
+      message: 'Реакция обновлена',
       likes: counts[0].likes,
       dislikes: counts[0].dislikes
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Ошибка при обновлении реакции на ответ' });
+    res.status(500).json({ error: 'Ошибка при обновлении реакции' });
   }
 };

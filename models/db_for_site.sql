@@ -242,6 +242,40 @@ LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+
+--
+-- Table structure for table `answer_reaction`
+--
+
+
+DROP TABLE IF EXISTS `answer_reaction`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `answer_reaction` (
+  `answer_reaction_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `student_id` INT UNSIGNED NOT NULL,
+  `answer_id` INT UNSIGNED NOT NULL,
+  `type_reaction` ENUM('like', 'dislike') NOT NULL,
+  PRIMARY KEY (`answer_reaction_id`),
+  UNIQUE KEY `unique_reaction` (`student_id`, `answer_id`), -- один студент, одна реакция на один ответ
+  KEY `student_id` (`student_id`),
+  KEY `answer_id` (`answer_id`),
+  CONSTRAINT `answer_reaction_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`student_id`),
+  CONSTRAINT `answer_reaction_ibfk_2` FOREIGN KEY (`answer_id`) REFERENCES `answer` (`answer_id`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Dumping data for table `answer_reaction`
+--
+
+LOCK TABLES `answer_reaction` WRITE;
+/*!40000 ALTER TABLE `answer_reaction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `answer_reaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 --
 -- Table structure for table `thread`
 --
@@ -311,3 +345,6 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-04-07 19:57:38
+
+
+

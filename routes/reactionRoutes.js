@@ -3,10 +3,9 @@ const router = express.Router();
 const reactionController = require('../controllers/reactionController');
 
 router.post('/update', reactionController.updateReaction);
-router.post('/update-answer', reactionController.updateAnswerReaction);
 
 router.get('/thread-reactions/count/:thread_id', reactionController.getThreadReactionsCount);
-
+router.get('/answer-reactions/count/:answer_id', reactionController.getAnswerReactionsCount);
 
 router.post('/thread-reactions', reactionController.reactToThread);
 router.post('/answer-reactions', reactionController.reactToAnswer);

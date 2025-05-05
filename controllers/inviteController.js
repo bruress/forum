@@ -14,25 +14,23 @@ exports.generate_link = async (req, res) => {
   }
 
   try {
-    // Проверяем, существует ли уже такой инвайт-код
     const [existingInvite] = await db.query('SELECT * FROM invite_link WHERE invite_code = ?', [invite_code]);
 
     if (existingInvite.length > 0) {
       return res.status(409).json({ error: 'Этот инвайт-код уже существует' });
     }
 
-    const [result] = await db.query(
+    await db.query(
       'INSERT INTO invite_link (invite_code, group_id, is_active) VALUES (?, ?, ?)',
       [invite_code, group_id, 1]
     );
 
     res.status(201).json({
-      message: 'инвайт-ссылка создана',
-      invite_link: `http://localhost:5000/students/register?invite_code=${invite_code}`,
+      message: 'Инвайт-код создан',
       invite_code
     });
   } catch (err) {
-    res.status(500).json({ error: 'ошибка', details: err.message });
+    res.status(500).json({ error: 'Ошибка сервера', details: err.message });
   }
 };
 
@@ -40,21 +38,19 @@ exports.generate_links = async (req, res) => {
   const { group_id, count } = req.body;
 
   if (!group_id || !count || isNaN(count) || count < 1) {
-    return res.status(400).json({ error: 'неправильный group_id или count (должен быть > 0)' });
+    return res.status(400).json({ error: 'Неправильный group_id или count (должен быть > 0)' });
   }
 
-  const inviteLinks = [];
+  const inviteCodes = [];
 
   try {
     for (let i = 0; i < count; i++) {
       const code = generate();
 
-
       const [existingInvite] = await db.query('SELECT * FROM invite_link WHERE invite_code = ?', [code]);
 
       if (existingInvite.length > 0) {
-
-        i--;
+        i--; // повтор, сгенерировать заново
         continue;
       }
 
@@ -62,15 +58,13 @@ exports.generate_links = async (req, res) => {
         'INSERT INTO invite_link (invite_code, group_id, is_active) VALUES (?, ?, ?)',
         [code, group_id, 1]
       );
-      inviteLinks.push({
-        invite_code: code,
-        invite_link: `http://localhost:5000/students/register?invite_code=${code}`
-      });
+
+      inviteCodes.push({ invite_code: code });
     }
 
     res.status(201).json({
       message: `Создано ${count} инвайтов`,
-      invites: inviteLinks
+      invites: inviteCodes
     });
   } catch (err) {
     res.status(500).json({ error: 'Ошибка при массовой генерации', details: err.message });

@@ -5,9 +5,10 @@ exports.register = async (req, res) => {
   const { invite_code, student_name, login, password } = req.body;
 
   if (!invite_code || !student_name || !login || !password) {
-    return res.status(400).json({ error: 'заполните все поля: invite_code, student_name, login, password' });
+    return res.status(400).json({
+      error: 'Заполните все поля: invite_code, student_name, login, password'
+    });
   }
-
   try {
     const [invite] = await db.query(
       'SELECT * FROM invite_link WHERE invite_code = ? AND is_active = 1',
@@ -15,42 +16,44 @@ exports.register = async (req, res) => {
     );
 
     if (invite.length === 0) {
-      return res.status(400).json({ error: 'неверный или неактивный инвайт-код' });
+      return res.status(400).json({
+        error: 'Неверный или неактивный инвайт-код'
+      });
     }
-
     const group_id = invite[0].group_id;
-
     const [existing] = await db.query(
       'SELECT * FROM student WHERE login = ?',
       [login]
     );
 
     if (existing.length > 0) {
-      return res.status(409).json({ error: 'пользователь с таким логином уже существует' });
+      return res.status(409).json({
+        error: 'Пользователь с таким логином уже существует'
+      });
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const [result] = await db.query(
       'INSERT INTO student (group_id, invite_code, student_name, login, password) VALUES (?, ?, ?, ?, ?)',
       [group_id, invite_code, student_name, login, hashedPassword]
     );
-
     await db.query(
       'UPDATE invite_link SET is_active = 0 WHERE invite_code = ?',
       [invite_code]
     );
-
     res.status(201).json({
-      message: 'регистрация прошла успешно',
+      message: 'Регистрация прошла успешно',
       student_id: result.insertId
     });
-
-  } catch (err) {
-    console.error('ошибка при регистрации:', err);
-    res.status(500).json({ error: 'Ошибка на сервере', details: err.message });
+  } 
+  catch (err) {
+    console.error('Ошибка при регистрации:', err);
+    res.status(500).json({
+      error: 'Ошибка на сервере',
+      details: err.message
+    });
   }
 };
+
 
 exports.login = async (req, res) => {
   const { login, password } = req.body;

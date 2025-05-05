@@ -7,8 +7,6 @@ const threadDate = decodeURIComponent(urlParams.get('thread_date'));
 const authorGroup = decodeURIComponent(urlParams.get('author_group') || 'Скрыто');
 const anonimState = urlParams.get('anonim_state');
 const user = JSON.parse(localStorage.getItem('user'));
-console.log('author_group:', urlParams.get('author_group'));
-
 
 async function isModerator() {
     if (user && user.id) {
@@ -113,10 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const anonimToggle = document.getElementById('anon-checkbox');  // чекбокс анонимности
     const threadDateElement = document.getElementById('thread-date');
     const threadAuthorGroupElement = document.getElementById('thread-author-group');
-
-    if (answersContainer) {
-        answersContainer.innerHTML = '';
-    }
     const studentId = user?.id || null;
     if (threadAuthorNameElement) threadAuthorNameElement.textContent = authorName;
     if (threadTextElement) threadTextElement.innerHTML = sanitizeHTML(threadText);
@@ -169,11 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isAnon = data.anonim_state === 1;
                 const authorName = isAnon ? 'Анонимный пользователь' : sanitizeHTML(data.student_name);
                 const groupName = isAnon ? 'Скрыто' : (data.group_name || 'Скрыто');
-                const postText = sanitizeHTML(data.answer_text);
                 const postDate = formatDate(data.created_date);
                 const answerElement = document.createElement('div');
                 answerElement.classList.add('answer');
                 answerElement.innerHTML = `
+                
                     <div class="answer-header">
                         <div class="author-info">
                             <a href="#" class="author-name-answer" id="answer-author-name">${authorName}</a>
@@ -181,19 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div class="post-date" id="answer-date">${postDate}</div>
                     </div>
-                    <div class="textarea-wrapper">
-                        <div class="text-wrapper">
-                            <div class="post-text">
-                                <div class="post-text-content" id="answer-text">${postText}</div>
-                            </div>
-                        </div>
-                        <div class="answer-panel">
-                            <button class="delete-btn-answer">
-                                <img src="img/delete.svg" alt="Удалить" class="delete-icon" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
                 `;
                 answersContainer.appendChild(answerElement);
             } 
@@ -244,6 +225,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    function logThreadText() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const threadText = decodeURIComponent(urlParams.get('thread_text')); 
+        if (threadText) {
+            console.log('threadText:', threadText); 
+            const threadTextElement = document.getElementById('thread-text');
+            if (threadTextElement) {
+                threadTextElement.innerHTML = threadText;
+            }
+        } else {
+            console.error('threadText не найден в URL параметрах');
+        }
+    }
+
     async function loadAnswers() {
         const answersContainer = document.getElementById('answers-container');
         if (!answersContainer) {
@@ -284,13 +279,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="textarea-wrapper">
                         <div class="text-wrapper">
                             <div class="post-text">
-                                <div class="post-text-content">${postText}</div>
+                                <div class="post-text-content-answer">${postText}</div>
                             </div>
                         </div>
                         <div class="answer-panel">
                             <button class="delete-btn-answer" id="answer-author-name">
                                 <img src="img/delete.svg" alt="Удалить" class="delete-icon" />
                             </button>
+                        </div>
+                    </div>
+                    
+                          <div class="reply-btn-wrapper">
+                        <div class="reactions">
+                            <button class="like-button">
+                                <img src="img/like.svg" alt="Like" />
+                            </button>
+                            <span class='react'></span>
+
+                            <button class="dislike-button">
+                                <img src="img/dislike.svg" alt="Dislike" />
+                            </button>
+                            <span class='react'></span>
                         </div>
                     </div>
                 `;
@@ -301,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     loadThreadTitle();
+    logThreadText();
     loadAnswers();
     document.addEventListener('click', (event) => {
         if (event.target.closest('.reply-btn')) {
@@ -311,7 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function sanitizeHTML(text) {
-    const doc = new DOMParser().parseFromString(text, 'text/html');
+    const textWithLineBreaks = text.replace(/\n/g, '<br>'); // ← добавляем эту строку
+    const doc = new DOMParser().parseFromString(textWithLineBreaks, 'text/html');
     const allowedTags = ['b', 'i', 'u', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li', 'blockquote'];
     const elements = doc.body.querySelectorAll('*');
     elements.forEach(el => {

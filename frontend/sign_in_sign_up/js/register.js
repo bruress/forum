@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const student_name = document.querySelector('#student_name').value;
     const login = document.querySelector('#login').value;
     const password = document.querySelector('#password').value;
-    const invite_code = new URLSearchParams(window.location.search).get('invite_code');
+    const invite_code = document.querySelector('#invite-code').value;
 
     try {
       const res = await fetch('http://localhost:5000/api/student/register-invite', {
@@ -33,3 +33,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
