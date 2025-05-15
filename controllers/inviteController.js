@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const db = require('../db');
 
 const generate = () => {
-  return crypto.randomBytes(6).toString('hex');
+  return crypto.randomBytes(3).toString('hex');
 };
 
 exports.generate_link = async (req, res) => {
@@ -50,7 +50,7 @@ exports.generate_links = async (req, res) => {
       const [existingInvite] = await db.query('SELECT * FROM invite_link WHERE invite_code = ?', [code]);
 
       if (existingInvite.length > 0) {
-        i--; // повтор, сгенерировать заново
+        i--; 
         continue;
       }
 

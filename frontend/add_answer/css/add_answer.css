@@ -211,6 +211,12 @@ body {
   text-align: center;
   margin-bottom: 20px;
   font-weight: 700;
+  width: 2000px;
+  align-items: center;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .catalog-header {
@@ -328,10 +334,13 @@ body {
 
 }
 
-.react {
+.dislike-count,
+.like-count {
   margin-top: 7px;
 }
-.react,
+
+.dislike-count,
+.like-count,
 .group,
 .post-date {
   font-weight: medium;

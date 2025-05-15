@@ -58,7 +58,6 @@ exports.delete_thread = async (req, res) => {
   }
 
   try {
-    // Удаляем тред
     await db.query('DELETE FROM thread WHERE thread_id = ?', [thread_id]);
     res.status(200).json({ message: 'тред удален' });
   } catch (err) {

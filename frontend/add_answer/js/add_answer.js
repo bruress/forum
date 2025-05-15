@@ -28,12 +28,6 @@ async function isModerator() {
     }
 }
 
-function displayFormattedText(thread) {
-    const postTextElement = document.querySelector('.post-text');
-    const postTextContent = thread.thread_text;
-    const formattedText = sanitizeHTML(postTextContent);
-    postTextElement.innerHTML = formattedText;
-}
 
 function formatDate(dateString) {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
@@ -288,27 +282,29 @@ document.addEventListener('DOMContentLoaded', () => {
                             </button>
                         </div>
                     </div>
-                    
-                          <div class="reply-btn-wrapper">
+                                        
+                    <div class="reply-btn-wrapper">
                         <div class="reactions">
-                            <button class="like-button">
-                                <img src="img/like.svg" alt="Like" />
-                            </button>
-                            <span class='react'></span>
+                        <button class="like-button">
+                            <img src="img/like.svg" alt="Like" />
+                        </button>
+                        <span class='like-count'>0</span>
 
-                            <button class="dislike-button">
-                                <img src="img/dislike.svg" alt="Dislike" />
-                            </button>
-                            <span class='react'></span>
+                        <button class="dislike-button">
+                            <img src="img/dislike.svg" alt="Dislike" />
+                        </button>
+                        <span class='dislike-count'>0</span>
                         </div>
                     </div>
-                `;
-                answersContainer.appendChild(answerElement);
+                    `;
+                    answersContainer.appendChild(answerElement);
+                    await updateReactionCount(answer.answer_id);
             }
         } 
         catch (error) {
         }
     }
+    
     loadThreadTitle();
     logThreadText();
     loadAnswers();
@@ -321,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function sanitizeHTML(text) {
-    const textWithLineBreaks = text.replace(/\n/g, '<br>'); // ← добавляем эту строку
+    const textWithLineBreaks = text.replace(/\n/g, '<br>');
     const doc = new DOMParser().parseFromString(textWithLineBreaks, 'text/html');
     const allowedTags = ['b', 'i', 'u', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li', 'blockquote'];
     const elements = doc.body.querySelectorAll('*');
@@ -331,4 +327,70 @@ function sanitizeHTML(text) {
         }
     });
     return doc.body.innerHTML;
+}
+document.addEventListener('click', async (event) => {
+    if (event.target.closest('.like-button') || event.target.closest('.dislike-button')) {
+        const answerElement = event.target.closest('.answer');
+        const answerId = answerElement.dataset.answerId;
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!user) {
+            alert('Вы не авторизованы.');
+            return;
+        }
+
+        const isLikeButton = event.target.closest('.like-button');
+        const reactionType = isLikeButton ? 'like' : 'dislike';
+
+        try {
+            const response = await fetch('/api/reactions/answer-reactions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    student_id: user.id,
+                    answer_id: answerId,
+                    type_reaction: reactionType,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка при установке реакции на ответ');
+            }
+            await updateReactionCount(answerId);
+        } catch (error) {
+            alert('Ошибка при установке реакции');
+        }
+    }
+});
+
+async function updateReactionCount(answerId) {
+    try {
+        const response = await fetch(`/api/reactions/answer-reactions/count/${answerId}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        const answerElements = document.querySelectorAll(`.answer[data-answer-id="${answerId}"]`);
+        
+        answerElements.forEach(answerElement => {
+            const likeCountElement = answerElement.querySelector('.like-count');
+            const dislikeCountElement = answerElement.querySelector('.dislike-count');
+            
+            if (likeCountElement) {
+                likeCountElement.textContent = data.like ?? 0;
+                likeCountElement.classList.add('updated');
+                setTimeout(() => likeCountElement.classList.remove('updated'), 300);
+            }
+            
+            if (dislikeCountElement) {
+                dislikeCountElement.textContent = data.dislike ?? 0;
+                dislikeCountElement.classList.add('updated');
+                setTimeout(() => dislikeCountElement.classList.remove('updated'), 300);
+            }
+        });
+    } catch (error) {
+    }
 }

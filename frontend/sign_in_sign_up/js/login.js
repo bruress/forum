@@ -23,13 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
       } 
       else {
         alert(data.error || 'Ошибка входа');
-        console.error('Ошибка входа:', data.error);  
-        window.location.href = 'error.html';
+
       }
     } catch (err) {
       alert('Ошибка сервера');
-      console.error('Ошибка сервера:', err); 
-      window.location.href = 'error.html';
+
+  
     }
   });
 });

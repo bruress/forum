@@ -69,17 +69,17 @@ exports.login = async (req, res) => {
     );
 
     if (rows.length === 0) {
-      return res.status(401).json({ error: 'неверные данные' });
+      return res.status(401).json({ error: 'Неверные данные.' });
     }
 
     const match = await bcrypt.compare(password, rows[0].password);
 
     if (!match) {
-      return res.status(401).json({ error: 'неверный пароль' });
+      return res.status(401).json({ error: 'Неверный пароль.' });
     }
 
     res.json({
-      message: 'вход успешен',
+      message: 'Вход успешен.',
       student: {
         id: rows[0].student_id,  
         name: rows[0].student_name,
@@ -89,7 +89,7 @@ exports.login = async (req, res) => {
     });
 
   } catch (err) {
-    console.error('ошибка при входе:', err);
+    console.error('Ошибка при входе: ', err);
     res.status(500).json({ error: 'ERROR', details: err.message });
   }
 };

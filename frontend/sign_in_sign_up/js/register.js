@@ -24,12 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
       } 
       else {
         alert(data.error || 'Ошибка регистрации');
-        window.location.href = 'error.html';
+
       }
     } 
     catch (err) {
       alert('Ошибка сервера');
-      window.location.href = 'error.html';
+  
     }
   });
 });

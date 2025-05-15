@@ -1,5 +1,7 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     loadCatalogs();
+    // loadCatalogsFilter();
     const submitButton = document.querySelector('.submit-btn');
     if (submitButton) {
         submitButton.addEventListener('click', submitThread);
@@ -45,7 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
+let cachedCatalogs = [];
+window.addEventListener('DOMContentLoaded', async () => {
+    await loadCatalogsFilter();
+    await loadThreads();
+});
 async function loadCatalogs() {
     try {
         const response = await fetch('/api/catalogs');
@@ -105,6 +111,7 @@ async function submitThread(event) {
             textArea.innerHTML = '';
             catalogSelect.value = '';
             anonymityCheckbox.checked = false;
+            location.reload();
         } 
         else {
             alert('Ошибка при создании треда: ' + result.error);
@@ -117,9 +124,119 @@ async function submitThread(event) {
         window.location.href = 'error.html';
     }
 }
+
 function formatText(command) {
     const textArea = document.getElementById('text-input');
     if (textArea) {
         document.execCommand(command, false, null);
     }
+}
+
+async function loadCatalogsFilter() {
+    try {
+        const response = await fetch('/api/catalogs');
+        const catalogs = await response.json();
+
+        cachedCatalogs = catalogs;
+
+        const checkboxContainer = document.getElementById('catalog-checkboxes');
+        checkboxContainer.innerHTML = '';
+
+        catalogs.forEach(catalog => {
+            const label = document.createElement('label');
+            label.className = 'checkbox';
+
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.value = catalog.catalog_id;
+            input.classList.add('catalog-checkbox');
+            input.addEventListener('change', loadThreads);
+
+            const custom = document.createElement('span');
+            custom.className = 'custom';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'checkbox-catalogs';
+            nameSpan.textContent = catalog.name_catalog;
+
+            label.appendChild(input);
+            label.appendChild(custom);
+            label.appendChild(nameSpan);
+            checkboxContainer.appendChild(label);
+        });
+    } catch (error) {
+    }
+}
+function getCatalogNameById(id) {
+    const found = cachedCatalogs.find(c => c.catalog_id === Number(id));
+    return found ? found.name_catalog : `Каталог ${id}`;
+}
+
+async function loadThreads() {
+    try {
+        const selectedCatalogs = Array.from(document.querySelectorAll('.catalog-checkbox:checked'))
+            .map(cb => cb.value);
+
+        let response;
+        if (selectedCatalogs.length > 0) {
+            const query = selectedCatalogs.join(',');
+            response = await fetch(`/api/catalogs/threads/by-catalogs?catalogs=${query}`);
+        } else {
+            response = await fetch('/api/threads');
+        }
+
+        let threads = await response.json();
+        threads.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+
+        const threadContainer = document.getElementById('thread-container');
+        threadContainer.innerHTML = '';
+
+        threads.slice(0, 3).forEach(thread => {
+            const catalogName = getCatalogNameById(thread.catalog_id);
+            const div = document.createElement('div');
+            div.className = 'filter-group';
+            div.innerHTML = `
+            <div class="filter-header">
+                <span class="filter-title">${thread.thread_name}</span>
+                <a class="filter-catalog" href="in_catalog.html?category_id=${thread.catalog_id}">
+                    ${catalogName}
+                </a>
+            </div>
+            <div class="filter-box">
+                <div class="filter-text thread-text-${thread.thread_id}" contenteditable="false"></div>
+            </div>
+        `;
+            threadContainer.appendChild(div);
+            const formattedText = sanitizeHTML(thread.thread_text);
+            displayFormattedText(`.thread-text-${thread.thread_id}`, formattedText);
+        });
+
+    } catch (err) {
+    }
+}
+
+function sanitizeHTML(text) {
+    const textWithLineBreaks = text.replace(/\n/g, '<br>');
+    const doc = new DOMParser().parseFromString(textWithLineBreaks, 'text/html');
+
+    const allowedTags = [
+        'b', 'i', 'u', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li', 'blockquote',
+        'sup', 'sub', 's', 'del', 'code', 'pre',
+        'strike'
+    ];
+
+    const elements = doc.body.querySelectorAll('*');
+
+    elements.forEach(el => {
+        if (!allowedTags.includes(el.nodeName.toLowerCase())) {
+            el.remove();
+        }
+    });
+
+    return doc.body.innerHTML;
+}
+function displayFormattedText(containerSelector, formattedText) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+    container.innerHTML = formattedText;
 }

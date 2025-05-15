@@ -215,8 +215,6 @@ body {
   flex-grow: 1;
 }
 
-
-
 .answer-counter {
   margin-bottom: 10px;
   background-color: #fff;
@@ -283,7 +281,10 @@ body {
   margin-bottom: 10px;
   margin-top: 5px;
   padding-left: 20px;
-
+  width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .react {
